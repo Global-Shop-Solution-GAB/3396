@@ -1,0 +1,102 @@
+Program.Sub.ScreenSU.Start
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Program.Sub.Definition.DefaultArgs("Browser","")
+Program.Sub.Definition.DefaultArgs("ProgramEnd","")
+
+
+Program.External.Include.Library("DEL_GetLocation.lib")
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'completed date 6-30-08
+F.Intrinsic.Debug.InvokeDebugger
+
+V.Local.s.Declare(String)
+V.Local.squery.Declare(String)
+V.Local.sUser.Declare(String)
+V.Local.sLocation.Declare(String)
+
+F.Intrinsic.Debug.Stop
+V.Local.sUser.Set(V.Caller.User)
+F.Intrinsic.Control.CallSub("GetLocation","Data",V.caller.user,"Type",3)
+F.Intrinsic.Control.If(V.Args.Loc,=,-1)
+	F.Intrinsic.UI.Msgbox("Location Not Found")
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.elseif(V.Args.loc,<>,-1)
+
+
+	F.Intrinsic.Control.If(V.Caller.Hook,=,"16720")
+		V.Passed.777777.Set(1)
+	F.Intrinsic.Control.CallSub(Browser)
+
+
+	F.Intrinsic.Control.Else
+		V.Passed.777777.Set(0)
+	F.Intrinsic.Control.End
+
+
+	F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.EndIf
+
+Program.Sub.Main.End
+
+Program.Sub.Browser.Start
+V.Local.sTitles.Declare(String)
+V.Local.iWidths.Declare(Long)
+V.Local.sRet.Declare(String)
+
+V.Local.sRtrSelect.Declare(String)
+V.Local.sSelect.Declare(String)
+
+V.Local.sUser.Declare(String)
+V.Local.sLocation.Declare(String)
+
+V.Local.sUser.Set(V.Caller.User)
+
+F.Intrinsic.Control.CallSub("GetLocation","Data",V.caller.user,"Type",3)
+'F.Intrinsic.Control.If(V.Args.Loc,=,-1)
+'	F.Intrinsic.UI.Msgbox("Location Not Found")
+F.Intrinsic.Control.if(V.Args.loc,<>,-1)
+
+'F.Intrinsic.Debug.stop
+Function.Odbc.Connection!Con.Openconnection(Variable.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+'F.Intrinsic.String.Concat("select distinct ROUTER, DESCRIPTION_ROUTER from V_ROUTER_HEADER Inner join V_INVENTORY_MSTR on V_ROUTER_HEADER.ROUTER=V_INVENTORY_MSTR.PART where V_INVENTORY_MSTR.LOCATION='",V.Args.Loc,"'order by ROUTER",V.Local.sSelect)
+f.Intrinsic.String.Concat("select distinct ROUTER,DESCRIPTION_ROUTER from V_ROUTER_HEADER where TRAVELER_REV='",V.Args.Loc,"'order by ROUTER","",V.Local.sSelect)
+	F.Intrinsic.String.Split("Router Number*!*Router Description","*!*",V.Local.sTitles)
+	F.Intrinsic.String.Split("2500*!*5000","*!*",V.Local.iWidths)
+
+		F.Intrinsic.UI.Browser("Select Router","con",V.Local.sSelect,V.Local.sTitles,V.Local.iWidths,V.Local.sRet)
+
+			F.Intrinsic.Control.If(V.Local.sRet,"<>","***CANCEL***")
+				F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRtrSelect)
+				V.Passed.009001.Set(V.Local.sRtrSelect(0))
+
+			F.Intrinsic.Control.ElseIf(V.Local.sRet,"=","***CANCEL***")
+				F.Intrinsic.Control.CallSub(Programend)
+			F.Intrinsic.Control.EndIf
+
+
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.End
+
+Program.Sub.Browser.End
+
+Program.Sub.ProgramEnd.Start
+F.Intrinsic.Control.End
+
+
+Program.Sub.ProgramEnd.End
+
+
+
+
+Program.Sub.Comments.Start
+${$0$}$$}$$}$12:00:00 AM$}$False
+Program.Sub.Comments.End
