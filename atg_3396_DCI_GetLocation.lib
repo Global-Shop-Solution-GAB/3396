@@ -1,0 +1,50 @@
+program.sub.preflight.start
+
+program.sub.preflight.end
+
+Program.Sub.GetLocation.Start
+V.Local.sLoc.Declare(String)
+V.Local.ProductLine.Declare(String)
+V.Local.passedarg.Declare(String)
+V.Local.passedType.Declare(String)
+V.Local.sLocation.Declare(String)
+
+V.Local.sLocation.Set(-1)
+V.Local.passedarg.Set(V.Args.data)
+V.Local.passedType.Set(V.Args.type)
+
+
+'F.Intrinsic.UI.Msgbox(V.Local.passedType)
+
+F.ODBC.Connection!con.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+
+F.Intrinsic.Debug.Stop
+F.Intrinsic.Control.If(V.Local.passedType,=,3)
+	F.Intrinsic.String.Concat("Select PL,ATG_3396_PL_LOC.LOC as LOC from ATG_3396_PL_LOC inner join ATG_USER_LOC on ATG_3396_PL_LOC.LOC=ATG_USER_LOC.LOC where USER_ID='",V.Local.passedarg,"'",V.Local.sLoc)
+	F.ODBC.Connection!con.OpenRecordsetRO("rstPLLOC",V.Local.sLoc)
+	F.Intrinsic.Control.If(V.ODBC.con!rstPLLOC.EOF,=,False)
+		V.Local.ProductLine.Set(V.ODBC.con!rstPLLOC.FieldVal!PL)
+		V.Local.sLocation.Set(V.ODBC.con!rstPLLOC.FieldVal!LOC)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.con!rstPLLOC.Close
+
+
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Variable.AddRV("LOC",V.Local.sLocation)
+F.Intrinsic.Variable.AddRV("PL",V.Local.ProductLine)
+
+F.ODBC.Connection!con.Close
+
+
+
+
+
+
+Program.Sub.GetLocation.End
+
+
+
+Program.Sub.Comments.Start
+${$0$}$$}$$}$12:00:00 AM$}$False
+Program.Sub.Comments.End
