@@ -1,0 +1,128 @@
+Program.Sub.ScreenSU.Start
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+
+Program.Sub.Definition.DefaultArgs("BOM_Browser","")
+Program.Sub.Definition.DefaultArgs("BOM_Where_Used_Browser","")
+
+Program.External.Include.Library("DEL_GetLocation.lib")
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'completion date 10-9-08
+
+V.Local.sUser.Declare(String)
+V.Local.sLocation.Declare(String)
+V.Local.sUser.Set(V.Caller.User)
+F.Intrinsic.Control.CallSub("GetLocation","Data",V.caller.user,"Type",3)
+F.Intrinsic.Control.If(V.Args.Loc,=,-1)
+	F.Intrinsic.UI.Msgbox("Location Not Found")
+F.Intrinsic.Control.End
+
+F.Intrinsic.Control.elseif(V.Args.loc,<>,-1)
+
+
+	F.Intrinsic.Control.If(V.Caller.Hook,=,"26300")
+		V.Passed.777777.Set(1)
+	F.Intrinsic.Control.CallSub(Bom_browser)
+
+	F.Intrinsic.Control.ElseIf(V.Caller.Hook,=,"26301")
+		V.Passed.777777.Set(1)
+	F.Intrinsic.Control.CallSub(Bom_where_used_browser)
+
+	F.Intrinsic.Control.Else
+		V.Passed.777777.Set(0)
+
+	F.Intrinsic.Control.EndIf
+
+
+
+F.Intrinsic.Control.EndIf
+
+
+
+Program.Sub.Main.End
+
+Program.Sub.BOM_Browser.Start
+V.Local.sTitles.Declare(String)
+V.Local.iWidths.Declare(Long)
+V.Local.sRet.Declare(String)
+
+V.Local.sBOMSelect.Declare(String)
+V.Local.sselect.Declare(String)
+
+V.Local.sUser.Declare(String)
+V.Local.sLocation.Declare(String)
+
+V.Local.sUser.Set(V.Caller.User)
+F.Intrinsic.Control.CallSub("GetLocation","Data",V.caller.user,"Type",3)
+'F.Intrinsic.Control.If(V.Args.Loc,=,-1)
+'	F.Intrinsic.UI.Msgbox("Location Not Found")
+F.Intrinsic.Control.if(V.Args.loc,<>,-1)
+
+
+F.Intrinsic.String.Split("Parent Number*!*Parent Description","*!*",V.Local.sTitles)
+F.Intrinsic.String.Split("4000*!*5000","*!*",V.Local.iWidths)
+
+Function.Odbc.Connection!Con.Openconnection(Variable.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+F.Intrinsic.String.Concat("Select distinct PART, DESCRIPTION from V_BOM_ENG inner join V_INVENTORY_MSTR on V_BOM_ENG.PART=V_INVENTORY_MSTR.PART where V_BOM_ENG.IS_PARENT='Y' and V_INVENTORY_MSTR.PRODUCT_LINE='",V.Args.PL,"'order by V_BOM_ENG.PART",V.Local.sselect)
+	F.Intrinsic.UI.Browser("Select a BOM Parent Number","con",V.Local.sselect,V.Local.sTitles,V.Local.iWidths,V.Local.sRet)
+		
+'F.Intrinsic.Debug.Stop
+		F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+			F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sBOMSelect)
+				V.Passed.009001.Set(V.Local.sBomSelect(0))
+				V.Passed.009003.Set(V.Local.sBOMSelect(1))
+
+		F.Intrinsic.Control.Endif
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.End
+
+Program.Sub.BOM_Browser.End
+
+Program.Sub.BOM_Where_Used_Browser.Start
+V.Local.sTitles.Declare(String)
+V.Local.iWidths.Declare(Long)
+V.Local.sRet.Declare(String)
+
+V.Local.sBOMSelect.Declare(String)
+V.Local.sselect.Declare(String)
+
+V.Local.sUser.Declare(String)
+V.Local.sLocation.Declare(String)
+
+V.Local.sUser.Set(V.Caller.User)
+F.Intrinsic.Control.CallSub("GetLocation","Data",V.caller.user,"Type",3)
+'F.Intrinsic.Control.If(V.Args.Loc,=,-1)
+'	F.Intrinsic.UI.Msgbox("Location Not Found")
+F.Intrinsic.Control.if(V.Args.loc,<>,-1)
+
+
+F.Intrinsic.String.Split("Component*!*Parent*!*Sequence","*!*",V.Local.sTitles)
+F.Intrinsic.String.Split("4000*!*4000*!*1000","*!*",V.Local.iWidths)
+
+Function.Odbc.Connection!Con.Openconnection(Variable.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+F.Intrinsic.String.Concat("Select distinct PART, PARENT,SEQUENCE_BOM from V_BOM_MSTR inner join V_INVENTORY_MSTR on V_BOM_MSTR.PARENT=V_INVENTORY_MSTR.PART where V_INVENTORY_MSTR.PRODUCT_LINE='",V.Args.PL,"'order by PART",V.Local.sselect)
+	F.Intrinsic.UI.Browser("Select a BOM Parent Number","con",V.Local.sselect,V.Local.sTitles,V.Local.iWidths,V.Local.sRet)
+		
+F.Intrinsic.Debug.Stop
+		F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+			F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sBOMSelect)
+				V.Passed.009001.Set(V.Local.sBomSelect(0))
+
+		F.Intrinsic.Control.Endif
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.End
+
+Program.Sub.BOM_Where_Used_Browser.End
+
+
+
+
+Program.Sub.Comments.Start
+${$0$}$$}$$}$12:00:00 AM$}$False
+Program.Sub.Comments.End
