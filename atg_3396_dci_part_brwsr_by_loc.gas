@@ -1,0 +1,344 @@
+Program.Sub.ScreenSU.Start
+
+Gui.PartLookup..Create
+Gui.PartLookup..Caption("Part Number Lookup")
+Gui.PartLookup..Size(4155,3060)
+Gui.PartLookup..Position(0,0)
+Gui.PartLookup..AlwaysOnTop(False)
+Gui.PartLookup..FontName("Arial")
+Gui.PartLookup..FontSize(8)
+Gui.PartLookup..ForeColor(0)
+Gui.PartLookup..Backcolor(-2147483633)
+Gui.PartLookup..ControlBox(True)
+Gui.PartLookup..MaxButton(True)
+Gui.PartLookup..MinButton(True)
+Gui.PartLookup..MousePointer(0)
+Gui.PartLookup..Moveable(True)
+Gui.PartLookup..Sizeable(True)
+Gui.PartLookup..ShowInTaskBar(True)
+Gui.PartLookup..TitleBar(True)
+
+Gui.PartLookup..Event(unload,ProgramEnd)
+
+Gui.PartLookup.frame1.Create(frame)
+Gui.PartLookup.frame1.Caption("Search By")
+Gui.PartLookup.frame1.Visible(True)
+Gui.PartLookup.frame1.Size(3810,1680)
+Gui.PartLookup.frame1.Zorder(0)
+Gui.PartLookup.frame1.Position(110,200)
+Gui.PartLookup.frame1.Enabled(True)
+Gui.PartLookup.frame1.BorderStyle(0)
+Gui.PartLookup.frame1.FontName("Arial")
+Gui.PartLookup.frame1.FontSize(8)
+Gui.PartLookup.frame1.Tooltip("")
+
+
+Gui.PartLookup.cmdOK.Create(button)
+Gui.PartLookup.cmdOK.Caption("OK")
+Gui.PartLookup.cmdOK.Visible(True)
+Gui.PartLookup.cmdOK.Size(855,375)
+Gui.PartLookup.cmdOK.Zorder(0)
+Gui.PartLookup.cmdOK.Position(485,1990)
+Gui.PartLookup.cmdOK.Enabled(True)
+Gui.PartLookup.cmdOK.FontName("Arial")
+Gui.PartLookup.cmdOK.FontSize(8)
+Gui.PartLookup.cmdOK.TabStop(True)
+Gui.PartLookup.cmdOK.TabIndex(1)
+Gui.PartLookup.cmdOK.Tooltip("")
+Gui.PartLookup.cmdOK.ControlGroup(0)
+Gui.PartLookup.cmdOK.DefaultValue("")
+
+Gui.PartLookup.cmdOK.Event(click,Browser)
+
+Gui.PartLookup.cmdCancel.Create(button)
+Gui.PartLookup.cmdCancel.Caption("CANCEL")
+Gui.PartLookup.cmdCancel.Visible(True)
+Gui.PartLookup.cmdCancel.Size(855,375)
+Gui.PartLookup.cmdCancel.Zorder(0)
+Gui.PartLookup.cmdCancel.Position(1535,2000)
+Gui.PartLookup.cmdCancel.Enabled(True)
+Gui.PartLookup.cmdCancel.FontName("Arial")
+Gui.PartLookup.cmdCancel.FontSize(8)
+Gui.PartLookup.cmdCancel.TabStop(True)
+Gui.PartLookup.cmdCancel.TabIndex(2)
+Gui.PartLookup.cmdCancel.Tooltip("")
+Gui.PartLookup.cmdCancel.ControlGroup(0)
+Gui.PartLookup.cmdCancel.DefaultValue("")
+
+Gui.PartLookup.cmdCancel.Event(click,ProgramEnd)
+
+Gui.PartLookup.optByPart.Create(option)
+Gui.PartLookup.optByPart.Caption("By Part Number")
+Gui.PartLookup.optByPart.Visible(True)
+Gui.PartLookup.optByPart.Size(2850,375)
+Gui.PartLookup.optByPart.Zorder(0)
+Gui.PartLookup.optByPart.Position(305,440)
+Gui.PartLookup.optByPart.Enabled(True)
+Gui.PartLookup.optByPart.Alignment(0)
+Gui.PartLookup.optByPart.FontName("Arial")
+Gui.PartLookup.optByPart.FontSize(8)
+Gui.PartLookup.optByPart.Parent("frame1")
+Gui.PartLookup.optByPart.TabStop(False)
+Gui.PartLookup.optByPart.TabIndex(3)
+Gui.PartLookup.optByPart.Tooltip("")
+Gui.PartLookup.optByPart.ControlGroup(0)
+Gui.PartLookup.optByPart.DefaultValue("")
+
+
+Gui.PartLookup.optByDescr.Create(option)
+Gui.PartLookup.optByDescr.Caption("By Part Description")
+Gui.PartLookup.optByDescr.Visible(True)
+Gui.PartLookup.optByDescr.Size(2835,375)
+Gui.PartLookup.optByDescr.Zorder(0)
+Gui.PartLookup.optByDescr.Position(305,965)
+Gui.PartLookup.optByDescr.Enabled(True)
+Gui.PartLookup.optByDescr.Alignment(0)
+Gui.PartLookup.optByDescr.FontName("Arial")
+Gui.PartLookup.optByDescr.FontSize(8)
+Gui.PartLookup.optByDescr.Parent("frame1")
+Gui.PartLookup.optByDescr.TabStop(False)
+Gui.PartLookup.optByDescr.TabIndex(4)
+Gui.PartLookup.optByDescr.Tooltip("")
+Gui.PartLookup.optByDescr.ControlGroup(0)
+Gui.PartLookup.optByDescr.DefaultValue("")
+
+
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Variable.Global.sUser.Declare(String)
+Program.Sub.Definition.DefaultArgs("Browser","")
+Program.Sub.Definition.DefaultArgs("ProgramEnd","")
+
+Program.Sub.Definition.DefaultArgs("QuoteByPartBRWSR","")
+Program.Sub.Definition.DefaultArgs("QuoteByPrtDescBWRSR","")
+
+
+Program.External.Include.Library("DEL_GetLocation.lib")
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'completed date 6-30-08
+V.Local.sUser.Declare(String)
+V.Local.sLocation.Declare(String)
+'V.Passed.777777.Set(0)
+
+
+'F.Intrinsic.Control.If(V.Args.Loc,=,-1)
+'	F.Intrinsic.UI.Msgbox("Location Not Found")
+'		F.Intrinsic.Control.End
+
+'F.Intrinsic.Control.elseif(V.Args.loc,<>,-1)
+
+
+
+	F.Intrinsic.Control.If(V.Caller.Hook,=,"26308")
+	V.Passed.777777.Set(1)
+	F.Intrinsic.Control.CallSub(Quotebypartbrwsr)
+
+	F.Intrinsic.Control.ElseIf(V.Caller.Hook,=,"26307")
+	V.Passed.777777.Set(1)
+	F.Intrinsic.Control.CallSub(Quotebyprtdescbwrsr)
+
+	F.Intrinsic.Control.Else
+	V.Passed.777777.Set(1)
+	Gui.PartLookup..Show
+	
+	F.Intrinsic.Control.EndIf
+
+'F.Intrinsic.Control.EndIf
+
+Program.Sub.Main.End
+
+Program.Sub.Browser.Start
+V.Local.sTitles.Declare(String)
+V.Local.iWidths.Declare(Long)
+V.Local.sRet.Declare(String)
+
+V.Local.sPartSelect.Declare(String)
+V.Local.sSelect.Declare(String)
+V.Local.sPart.Declare(String)
+V.Local.sRev.Declare(String)
+'V.Local.sLoc.Declare(String)
+
+V.Local.sPartNo.Declare(String)
+V.Local.sDesc.Declare(String)
+
+V.Local.sUser.Declare(String)
+V.Local.sLocation.Declare(String)
+F.Intrinsic.Debug.Stop
+
+V.Local.sUser.Set(V.Caller.User)
+'V.Passed.777777.Set(1)
+
+F.Intrinsic.Control.CallSub("GetLocation","Data",V.caller.user,"Type",3)
+F.Intrinsic.Control.If(V.Args.Loc,=,-1)
+	F.Intrinsic.UI.Msgbox("Location Not Found")
+F.Intrinsic.Control.elseif(V.Args.loc,<>,-1)
+
+		V.Local.sPartNo.Set(V.Screen.PartLookup!optByPart.Value)
+		V.Local.sDesc.Set(V.Screen.PartLookup!optByDescr.Value)
+
+	F.Intrinsic.Control.If(V.Local.sPartNo,=,True)
+
+		F.Intrinsic.String.Split("Part Number*!*Loc*!*Description*!*On-Hand","*!*",V.Local.sTitles)
+		F.Intrinsic.String.Split("2500*!*500*!*4000*!*1500","*!*",V.Local.iWidths)
+
+			Function.Odbc.Connection!Con.Openconnection(Variable.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+			F.Intrinsic.String.Concat("select distinct PART, LOCATION, DESCRIPTION, QTY_ONHAND from V_INVENTORY_MSTR where LOCATION='",V.Args.LOC,"'order by PART,LOCATION","",V.Local.sSelect)
+			F.Intrinsic.UI.MiniBrowser("Select Part Number","con",V.Local.sSelect,V.Local.sTitles,V.Local.iWidths,V.Local.sRet)
+
+
+
+				F.Intrinsic.Control.If(V.Local.sRet,"<>","***CANCEL***")
+F.Intrinsic.Debug.Stop
+					F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sPartSelect)
+					V.Passed.CANCEL.Set(0)
+					V.Passed.009001.Set(V.Local.sPartSelect(0))
+					V.Passed.009002.Set(V.Local.sPartSelect(1))
+				F.Intrinsic.Control.ElseIf(V.Local.sRet,"=","***CANCEL***")
+					F.Intrinsic.Control.CallSub(Programend)
+				F.Intrinsic.Control.EndIf
+			
+
+	F.Intrinsic.Control.ElseIf(V.Local.sDesc,=,True)
+		F.Intrinsic.String.Split("Description*!*Part Number*!*Loc*!*On Hand","*!*",V.Local.sTitles)
+		F.Intrinsic.String.Split("4000*!*2500*!*700*!*1500","*!*",V.Local.iWidths)
+
+			Function.Odbc.Connection!Con.Openconnection(Variable.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+
+			F.Intrinsic.String.Concat("select distinct DESCRIPTION, PART, LOCATION, QTY_ONHAND from V_INVENTORY_MSTR where LOCATION='",V.Args.LOC,"'",V.Local.sSelect)
+			F.Intrinsic.UI.Browser("Select Part Number","con",V.Local.sSelect,V.Local.sTitles,V.Local.iWidths,V.Local.sRet)
+
+				F.Intrinsic.Control.If(V.Local.sRet,"<>","***CANCEL***")
+					F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sPartSelect)
+					V.Passed.009001.Set(V.Local.sPartSelect(1))
+					V.Passed.009002.Set(V.Local.sPartSelect(2))
+
+				F.Intrinsic.Control.ElseIf(V.Local.sRet,"=","***CANCEL***")
+					F.Intrinsic.Control.CallSub(Programend)
+				F.Intrinsic.Control.EndIf
+
+		
+F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.End
+
+				
+
+Program.Sub.Browser.End
+
+program.sub.ProgramEnd.start
+
+F.Intrinsic.Control.If(V.Caller.Hook,=,17380)
+	V.Passed.CANCEL.Set(1)
+f.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.End
+
+
+program.sub.ProgramEnd.end
+
+Program.Sub.QuoteByPartBRWSR.Start
+V.Local.sTitles.Declare(String)
+V.Local.iWidths.Declare(Long)
+V.Local.sRet.Declare(String)
+
+V.Local.sPartSelect.Declare(String)
+V.Local.sSelect.Declare(String)
+
+V.Local.sLoc.Declare(String)
+V.Local.sPartNo.Declare(String)
+V.Local.sDesc.Declare(String)
+
+V.Local.sUser.Declare(String)
+V.Local.sLocation.Declare(String)
+
+
+V.Local.sUser.Set(V.Caller.User)
+V.Passed.777777.Set(1)
+F.Intrinsic.Control.CallSub("GetLocation","Data",V.caller.user,"Type",3)
+F.Intrinsic.Control.If(V.Args.Loc,=,-1)
+	F.Intrinsic.UI.Msgbox("Location Not Found")
+F.Intrinsic.Control.elseif(V.Args.loc,<>,-1)
+
+
+V.Local.sTitles.Set("Part Number")
+V.Local.iWidths.Set(4000)
+
+Function.Odbc.Connection!Con.Openconnection(Variable.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+F.Intrinsic.String.Concat("select distinct PART from V_QUOTE_LINES where LOCATION='",V.Args.Loc,"'order by PART",V.Local.sSelect)
+
+	F.Intrinsic.UI.MiniBrowser("Select Part Number","con",V.Local.sSelect,V.Local.sTitles,V.Local.iWidths,V.Local.sRet)
+
+		F.Intrinsic.Control.If(V.Local.sRet,"<>","***CANCEL***")
+			F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sPartSelect)
+			V.Passed.009001.Set(V.Local.sPartSelect(0))
+
+		F.Intrinsic.Control.ElseIf(V.Local.sRet,"=","***CANCEL***")
+			F.Intrinsic.Control.CallSub(Programend)
+		F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.End
+
+
+Program.Sub.QuoteByPartBRWSR.End
+
+Program.Sub.QuoteByPrtDescBWRSR.Start
+V.Local.sTitles.Declare(String)
+V.Local.iWidths.Declare(Long)
+V.Local.sRet.Declare(String)
+
+V.Local.sPartSelect.Declare(String)
+V.Local.sSelect.Declare(String)
+
+V.Local.sLoc.Declare(String)
+V.Local.sPartNo.Declare(String)
+V.Local.sDesc.Declare(String)
+
+V.Local.sUser.Declare(String)
+V.Local.sLocation.Declare(String)
+
+
+V.Local.sUser.Set(V.Caller.User)
+V.Passed.777777.Set(1)
+F.Intrinsic.Control.CallSub("GetLocation","Data",V.caller.user,"Type",3)
+'F.Intrinsic.Control.If(V.Args.Loc,=,-1)
+'	F.Intrinsic.UI.Msgbox("Location Not Found")
+F.Intrinsic.Control.if(V.Args.loc,<>,-1)
+
+
+F.Intrinsic.String.Split("Description*!*Number","*!*",V.Local.sTitles)
+F.Intrinsic.String.Split("3000*!*3000","*!*",V.Local.iWidths)
+
+Function.Odbc.Connection!Con.Openconnection(Variable.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+F.Intrinsic.String.Concat("select distinct DESCRIPTION, PART from V_QUOTE_LINES where LOCATION='",V.Args.Loc,"'order by DESCRIPTION",V.Local.sSelect)
+
+	F.Intrinsic.UI.MiniBrowser("Select Description","con",V.Local.sSelect,V.Local.sTitles,V.Local.iWidths,V.Local.sRet)
+
+		F.Intrinsic.Control.If(V.Local.sRet,"<>","***CANCEL***")
+			F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sPartSelect)
+			V.Passed.009001.Set(V.Local.sPartSelect(0))
+
+		F.Intrinsic.Control.ElseIf(V.Local.sRet,"=","***CANCEL***")
+			F.Intrinsic.Control.CallSub(Programend)
+		F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.End
+
+
+
+Program.Sub.QuoteByPrtDescBWRSR.End
+
+
+
+
+Program.Sub.Comments.Start
+${$0$}$$}$$}$12:00:00 AM$}$False
+Program.Sub.Comments.End
