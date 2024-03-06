@@ -1,0 +1,131 @@
+Program.Sub.ScreenSU.Start
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+
+Program.Sub.Definition.DefaultArgs("BOM_GetNext","")
+Program.Sub.Definition.DefaultArgs("BOM_GetPrev","")
+
+Program.External.Include.Library("DEL_GetLocation.lib")
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'completed date 6-30-08
+
+V.Local.sUser.Declare(String)
+V.Local.sLocation.Declare(String)
+V.Local.sUser.Set(V.Caller.User)
+F.Intrinsic.Control.CallSub("GetLocation","Data",V.caller.user,"Type",3)
+
+F.Intrinsic.Control.If(V.Args.Loc,=,-1)
+	F.Intrinsic.UI.Msgbox("Location Not Found")
+F.Intrinsic.Control.End
+
+
+F.Intrinsic.Control.elseif(V.Args.loc,<>,-1)
+
+
+F.Intrinsic.Control.If(V.Caller.Hook,=,"16295")
+	F.Intrinsic.Control.CallSub(Bom_getnext)
+
+
+F.Intrinsic.Control.ElseIf(V.Caller.Handle,=,"16294")
+	F.Intrinsic.Control.CallSub(Bom_getprev)
+
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+
+Program.Sub.Main.End
+
+Program.Sub.BOM_GetNext.Start
+V.Local.sUser.Declare(String)
+V.Local.sLocation.Declare(String)
+
+V.Local.sSelect.Declare(String)
+V.Local.sPart.Declare(String)
+V.Local.sLoc.Declare(String)
+
+V.Local.snextPart.Declare(String)
+
+V.Local.sPart.Set(V.Passed.000001)
+'V.Local.sLoc.Set(V.Passed.009001)
+
+V.Passed.777777.Set(1)
+V.Local.sUser.Set(V.Caller.User)
+F.Intrinsic.Control.CallSub("GetLocation","Data",V.caller.user,"Type",3)
+'F.Intrinsic.Control.If(V.Args.Loc,=,-1)
+'	F.Intrinsic.UI.Msgbox("Location Not Found")
+F.Intrinsic.Control.if(V.Args.loc,<>,-1)
+
+	Function.Odbc.Connection!Con.Openconnection(Variable.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+		F.Intrinsic.String.Concat("select distinct PART from V_BOM_ENG inner join V_INVENTORY_MSTR on V_BOM_ENG.PART=V_INVENTORY_MSTR.PART where V_BOM_ENG.IS_PARENT='Y' and V_INVENTORY_MSTR.PRODUCT_LINE='",V.Args.PL,"'and PART>'",V.Local.sPart,"'order by PART",V.Local.snextPart)
+		F.ODBC.Connection!Con.OpenRecordsetRO("rstpart",V.Local.snextPart)
+	F.Intrinsic.Control.If(V.ODBC.Con!rstpart.EOF,=,False)
+
+		V.Local.sPart.Set(V.ODBC.Con!rstpart.FieldVal!PART)
+
+			V.Passed.000001.Set(V.Local.sPart)
+	F.Intrinsic.Control.EndIf
+
+
+F.Intrinsic.Control.EndIf
+
+F.ODBC.Con!rstpart.Close
+
+
+F.Intrinsic.Control.End
+
+Program.Sub.BOM_GetNext.End
+
+Program.Sub.BOM_GetPrev.Start
+V.Local.sUser.Declare(String)
+V.Local.sLocation.Declare(String)
+
+V.Local.sSelect.Declare(String)
+V.Local.sPart.Declare(String)
+V.Local.sLoc.Declare(String)
+
+V.Local.snextPart.Declare(String)
+
+V.Local.sPart.Set(V.Passed.009000)
+'V.Local.sLoc.Set(V.Passed.009001)
+
+V.Passed.777777.Set(1)
+
+'V.Local.sUser.Set(V.Caller.User)
+F.Intrinsic.Control.CallSub("GetLocation","Data",V.caller.user,"Type",3)
+'F.Intrinsic.Control.If(V.Args.Loc,=,-1)
+'	F.Intrinsic.UI.Msgbox("Location Not Found")
+F.Intrinsic.Control.if(V.Args.loc,<>,-1)
+
+	Function.Odbc.Connection!Con.Openconnection(Variable.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+		F.Intrinsic.String.Concat("select distinct PART from V_BOM_ENG inner join V_INVENTORY_MSTR on V_BOM_ENG.PART=V_INVENTORY.PART where V_BOM_ENG.IS_PARENT = 'Y' and V_INVENTORY_MSTR.PRODUCT_LINE='",V.Args.PL,"'and PART<'",V.Local.sPart,"'order by PART",V.Local.snextPart)
+		F.ODBC.Connection!Con.OpenRecordsetRO("rstpart",V.Local.snextPart)
+	F.Intrinsic.Control.If(V.ODBC.Con!rstpart.EOF,=,False)
+
+		V.Local.sPart.Set(V.ODBC.Con!rstpart.FieldVal!PART)
+
+	F.Intrinsic.Control.EndIf
+		V.Passed.009000.Set(V.Local.sPart)
+
+
+F.Intrinsic.Control.EndIf
+
+F.ODBC.Con!rstpart.Close
+
+F.Intrinsic.Control.End
+
+
+
+
+Program.Sub.BOM_GetPrev.End
+
+
+
+
+Program.Sub.Comments.Start
+${$0$}$$}$$}$12:00:00 AM$}$False
+Program.Sub.Comments.End
